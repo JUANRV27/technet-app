@@ -1,11 +1,32 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+        const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            router.push("/feed");
+        } else {
+            setError(data.message || "Error al iniciar sesión");
+        }
+    };
+
     return (
         <div className="min-h-screen flex flex-col bg-cover bg-center" style={{ backgroundImage: 'url(/Register.jpg)' }}>
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -13,7 +34,7 @@ export default function LoginPage() {
                 <main className="flex-1 flex flex-col items-center justify-center px-4">
                     <div className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md">
                         <h2 className="font-kdam text-3xl text-blue-700 mb-6">Iniciar sesión</h2>
-                        <form className="w-full flex flex-col gap-4">
+                        <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-semibold text-gray-700 mb-1 ml-1">Usuario</label>
                                 <div className="relative w-full">
@@ -25,6 +46,8 @@ export default function LoginPage() {
                                         placeholder="Correo electrónico"
                                         className="pl-10 border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg w-full"
                                         required
+                                        value={email}
+                                        onChange={e => setEmail(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -39,6 +62,8 @@ export default function LoginPage() {
                                         placeholder="Contraseña"
                                         className="pl-10 pr-10 border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg w-full"
                                         required
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
                                     />
                                     <button
                                         type="button"
@@ -51,6 +76,7 @@ export default function LoginPage() {
                                     </button>
                                 </div>
                             </div>
+                            {error && <span className="text-red-500 text-sm">{error}</span>}
                             <button
                                 type="submit"
                                 className="bg-blue-500 text-white font-kdam text-lg rounded-md py-3 mt-2 hover:bg-blue-700 transition-colors shadow-md"
