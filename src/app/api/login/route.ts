@@ -15,6 +15,10 @@ export async function POST(req: Request) {
     const { email, password } = await req.json();
     console.log("Datos recibidos:", email, password);
 
+    // Log para ver todos los usuarios en la base de datos
+    const users = await User.find({});
+    console.log("Usuarios en la base de datos:", users);
+
     const user = await User.findOne({ email, contrasena: password });
     if (user) {
       return NextResponse.json({ success: true, message: "Login correcto" });
