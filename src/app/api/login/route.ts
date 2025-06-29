@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   try {
     await connectToDatabase();
     const { email, password } = await req.json();
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email, contrasena: password });
     if (user) {
       return NextResponse.json({ success: true, message: "Login correcto" });
     } else {
