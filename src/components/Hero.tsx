@@ -20,7 +20,7 @@ export default function Hero() {
             </a>
             <button
             onClick={() => router.push("/login")}
-            className="px-6 py-3 border border-blue-500 text-blue-500 font-kdam text-lg rounded-md hover:bg-blue-50 transition-colors"
+            className="cursor-pointer px-6 py-3 border border-blue-500 text-blue-500 font-kdam text-lg rounded-md hover:bg-blue-100 transition-colors"
             >
             Iniciar sesión
             </button>

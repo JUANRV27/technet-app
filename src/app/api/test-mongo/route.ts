@@ -5,6 +5,7 @@ export async function GET() {
         await connectToDatabase();
         return Response.json({ success: true, message: "Conexión exitosa a MongoDB" });
     } catch (error) {
-        return Response.json({ success: false, message: "Error de conexión", error: error?.message || error });
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        return Response.json({ success: false, message: "Error de conexión", error: errorMessage });
     }
 }
