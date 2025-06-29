@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
-  contrasena: { type: String, required: true }, // Cambiado a "contrasena"
+  contrasena: { type: String, required: true },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema, "Usuarios");
@@ -13,7 +13,8 @@ export async function POST(req: Request) {
   try {
     await connectToDatabase();
     const { email, password } = await req.json();
-    // Buscar por "contrasena" en la base de datos
+    console.log("Datos recibidos:", email, password);
+
     const user = await User.findOne({ email, contrasena: password });
     if (user) {
       return NextResponse.json({ success: true, message: "Login correcto" });
@@ -21,6 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Credenciales incorrectas" }, { status: 401 });
     }
   } catch (error) {
+    console.error("Error en login:", error);
     return NextResponse.json({ success: false, message: "Error en el servidor" }, { status: 500 });
   }
 }
