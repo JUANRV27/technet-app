@@ -3,8 +3,10 @@ import Navbar from "@/components/Navbar";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -45,14 +47,24 @@ export default function RegisterPage() {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         // Validación final antes de enviar
         if (password !== confirmPassword) {
             setPasswordError("Las contraseñas no coinciden");
             return;
         }
-        // Aquí va la lógica para enviar el formulario
+        const res = await fetch("/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, contrasena: password }),
+        });
+        const data = await res.json();
+        if (data.success) {
+            router.push("/feed"); // Redirige al feed si el registro fue exitoso
+        } else {
+            setPasswordError(data.error || "Error en el registro");
+        }
     };
     
     return (
@@ -63,20 +75,7 @@ export default function RegisterPage() {
                     <div className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md">
                         <h2 className="font-kdam text-3xl text-blue-700 mb-6">Crear cuenta</h2>
                         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-sm font-semibold text-gray-700 mb-1 ml-1">Nombre de usuario</label>
-                                <div className="relative w-full">
-                                    <span className="absolute left-3 inset-y-0 flex items-center text-blue-400">
-                                        <FaUser />
-                                    </span>
-                                    <input
-                                        type="text"
-                                        placeholder="Nombre de usuario"
-                                        className="pl-10 border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg w-full"
-                                        required
-                                    />
-                                </div>
-                            </div>
+
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-semibold text-gray-700 mb-1 ml-1">Correo electrónico</label>
                                 <div className="relative w-full">

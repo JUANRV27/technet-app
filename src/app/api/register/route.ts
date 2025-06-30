@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-
 // Esquema de usuario simple
 const UserSchema = new mongoose.Schema({
     username: String,
@@ -8,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     password: String,
 });
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema, "Usarios");
+const User = mongoose.models.User || mongoose.model("User", UserSchema, "Usuarios");
 
 // Conexión a MongoDB
 async function connectDB() {
@@ -19,10 +18,10 @@ async function connectDB() {
     export async function POST(req: NextRequest) {
     try {
         await connectDB();
-        const { username, email, password } = await req.json();
+        const {email, contrasena } = await req.json();
 
         // Validación básica
-        if (!username || !email || !password) {
+        if (!email || !contrasena) {
         return NextResponse.json({ error: "Faltan campos" }, { status: 400 });
         }
 
@@ -39,7 +38,7 @@ async function connectDB() {
         }
 
         // Crea el usuario
-        const user = new User({ username, email, password });
+        const user = new User({ email, contrasena});
         await user.save();
 
         return NextResponse.json({ success: true, message: "Usuario registrado correctamente" });
