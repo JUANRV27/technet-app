@@ -5,6 +5,7 @@ export default function sideNavbar() {
     const router = useRouter();
     return (
         <nav className="flex flex-col gap-6">
+            <FaUserCircle href="/settings" className="text-4xl text-blue-500 mb-8" />
             <button onClick={() => router.push("/feed")} type="button" title="Inicio" className="text-blue-500 hover:text-blue-700">
                 <FaHome size={24} />
             </button>

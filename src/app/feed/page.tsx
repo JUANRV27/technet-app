@@ -7,7 +7,6 @@ export default function FeedPage() {
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
             <aside className="w-20 bg-white border-r flex flex-col items-center py-8 gap-8">
-                <FaUserCircle className="text-4xl text-blue-500 mb-8" />
                 <SideNavbar />
             </aside>
             {/* Main Feed */}
