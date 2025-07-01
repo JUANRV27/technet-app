@@ -1,7 +1,9 @@
 export default function Navbar() {
     return (
         <nav className="flex justify-between items-center px-8 py-4 bg-white shadow-md">
-        <h1 className="font-kdam text-4xl tracking-wide">TechNet</h1>
+        <h1 className="font-kdam text-4xl tracking-wide">
+            <a href="/landing">TechNet</a>
+        </h1>
         <div className="space-x-4">
             <a
             href="/login"
