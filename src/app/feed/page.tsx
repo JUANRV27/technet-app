@@ -1,23 +1,14 @@
 "use client";
 import { FaUserCircle, FaHome, FaBell, FaSignOutAlt, FaPlus } from "react-icons/fa";
-
+import { useRouter } from "next/navigation";
+import SideNavbar from "../../components/sideNavbar";
 export default function FeedPage() {
     return (
         <div className="flex min-h-screen bg-gray-100">
             {/* Sidebar */}
             <aside className="w-20 bg-white border-r flex flex-col items-center py-8 gap-8">
                 <FaUserCircle className="text-4xl text-blue-500 mb-8" />
-                <nav className="flex flex-col gap-6">
-                    <button type="button" title="Inicio" className="text-blue-500 hover:text-blue-700">
-                        <FaHome size={24} />
-                    </button>
-                    <button type="button" title="Notificaciones" className="text-gray-400 hover:text-blue-700">
-                        <FaBell size={24} />
-                    </button>
-                    <button type="button" title="Cerrar sesión" className="text-gray-400 hover:text-blue-700 mt-8">
-                        <FaSignOutAlt size={24} />
-                    </button>
-                </nav>
+                <SideNavbar />
             </aside>
             {/* Main Feed */}
             <main className="flex-1 flex flex-col items-center py-10 px-4">
