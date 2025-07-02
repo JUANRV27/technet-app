@@ -17,13 +17,13 @@ export default function LoginPage() {
         const res = await fetch("/api/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ email, contrasena: password }),
         });
         const data = await res.json();
         if (data.success) {
             router.push("/feed");
         } else {
-            setError(data.message || "Error al iniciar sesión");
+            setError(data.error || "Error al iniciar sesión");
         }
     };
 

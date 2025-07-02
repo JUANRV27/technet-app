@@ -1,32 +1,66 @@
 import { connectToDatabase } from "@/lib/mongodb";
+import { NextRequest, NextResponse } from "next/server";
 import mongoose from "mongoose";
-import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
-const UserSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  contrasena: { type: String, required: true },
-});
+// Esquema de usuario (ajusta según tu modelo real)
+const UserSchema = new mongoose.Schema(
+  {
+    email: String,
+    contrasena: String,
+    username: String,
+    // otros campos...
+  },
+  { collection: "Usuarios" }
+);
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema, "Usuarios");
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
-export async function POST(req: Request) {
+async function connectDB() {
+  if (mongoose.connection.readyState === 1) return;
+  await mongoose.connect(process.env.MONGODB_URI as string);
+}
+
+export async function POST(req: NextRequest) {
   try {
-    await connectToDatabase();
-    const { email, password } = await req.json();
-    console.log("Datos recibidos:", email, password);
+    await connectDB();
+    const { email, contrasena } = await req.json();
 
-    // Log para ver todos los usuarios en la base de datos
-    const users = await User.find({});
-    console.log("Usuarios en la base de datos:", users);
-
-    const user = await User.findOne({ email, contrasena: password });
-    if (user) {
-      return NextResponse.json({ success: true, message: "Login correcto" });
-    } else {
-      return NextResponse.json({ success: false, message: "Credenciales incorrectas" }, { status: 401 });
+    const user = await User.findOne({ email });
+    
+    if (!user || !user.contrasena) {
+      return NextResponse.json(
+        { success: false, error: "Usuario o contraseña incorrectos" },
+        { status: 401 }
+      );
     }
+    
+    // Compara la contraseña en texto plano con el hash
+    const isMatch = await bcrypt.compare(contrasena, user.contrasena);
+
+    if (!isMatch) {
+    return NextResponse.json(
+      { success: false, error: "Usuario o contraseña incorrectos" },
+      { status: 401 }
+    );
+    }
+
+    // Login correcto: guarda el email en la cookie
+    const response = NextResponse.json({ success: true });
+    response.cookies.set("userEmail", email, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    console.log("Login exitoso, enviando cookie y success:true");
+    return response;
   } catch (error) {
     console.error("Error en login:", error);
-    return NextResponse.json({ success: false, message: "Error en el servidor" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Error en el servidor" },
+      { status: 500 }
+    );
   }
 }

@@ -1,8 +1,7 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
-import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -11,26 +10,37 @@ export default function RegisterPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
-
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [usernameError, setUsernameError] = useState("");
+
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUsername(e.target.value);
+        if (!e.target.value.trim()) {
+            setUsernameError("El nombre de usuario es obligatorio");
+        } else {
+            setUsernameError("");
+        }
+    };
 
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setEmail(value);
         if (value && !validateEmail(value)) {
-        setEmailError("Correo electrónico inválido");
+            setEmailError("Correo electrónico inválido");
         } else {
-        setEmailError("");
+            setEmailError("");
         }
     };
 
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
-        // Validar en tiempo real si las contraseñas coinciden
         if (confirmPassword && e.target.value !== confirmPassword) {
             setPasswordError("Las contraseñas no coinciden");
         } else {
@@ -49,7 +59,10 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Validación final antes de enviar
+        if (!username.trim()) {
+            setUsernameError("El nombre de usuario es obligatorio");
+            return;
+        }
         if (password !== confirmPassword) {
             setPasswordError("Las contraseñas no coinciden");
             return;
@@ -57,16 +70,19 @@ export default function RegisterPage() {
         const res = await fetch("/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, contrasena: password }),
+            body: JSON.stringify({ username, email, contrasena: password }),
         });
         const data = await res.json();
         if (data.success) {
-            router.push("/feed"); // Redirige al feed si el registro fue exitoso
+            setSuccessMessage("¡Registro exitoso! Redirigiendo...");
+            setTimeout(() => {
+                router.push("/feed");
+            }, 1500); // 1.5 segundos de espera
         } else {
             setPasswordError(data.error || "Error en el registro");
         }
     };
-    
+
     return (
         <div className="min-h-screen flex flex-col bg-cover bg-center" style={{ backgroundImage: 'url(/Register.jpg)' }}>
             <div className="relative z-10 flex flex-col min-h-screen">
@@ -74,8 +90,29 @@ export default function RegisterPage() {
                 <main className="flex-1 flex flex-col items-center justify-center px-4">
                     <div className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md">
                         <h2 className="font-kdam text-3xl text-blue-700 mb-6">Crear cuenta</h2>
+                        {successMessage && (
+                            <span className="mb-4 text-green-600 font-semibold text-center">{successMessage}</span>
+                        )}
                         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
-
+                            <div className="flex flex-col gap-1">
+                                <label className="text-sm font-semibold text-gray-700 mb-1 ml-1">Nombre de usuario</label>
+                                <div className="relative w-full">
+                                    <span className="absolute left-3 inset-y-0 flex items-center text-blue-400">
+                                        <FaUser />
+                                    </span>
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={handleUsernameChange}
+                                        placeholder="Nombre de usuario"
+                                        className="pl-10 border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 text-lg w-full"
+                                        required
+                                    />
+                                    {usernameError && (
+                                        <span className="text-red-500 text-sm">{usernameError}</span>
+                                    )}
+                                </div>
+                            </div>
                             <div className="flex flex-col gap-1">
                                 <label className="text-sm font-semibold text-gray-700 mb-1 ml-1">Correo electrónico</label>
                                 <div className="relative w-full">
