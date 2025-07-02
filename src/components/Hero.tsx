@@ -1,30 +1,41 @@
 "use client";
+import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export default function Hero() {
     const router = useRouter();
     return (
-        <section className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] bg-white px-6 text-center">
-        <h1 className="font-kdam text-[56px] tracking-wide text-black leading-none">
-            TechNet
-        </h1>
-        <p className="font-sans text-lg text-gray-600 mt-4 max-w-xl">
-            Conecta más allá de la tecnología
-        </p>
-        <div className="mt-6 flex gap-4 flex-wrap justify-center">
+        <motion.section
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="w-full flex flex-col items-center justify-center py-24 px-4 relative bg-cover bg-center"
+        style={{ backgroundImage: "url(/hero_imagen_bg.jpg)" }}
+        >
+        <div className="absolute inset-0 bg-black/40 z-0" />
+        <div className="relative z-10 flex flex-col items-center">
+            <h1 className="text-5xl md:text-6xl font-extrabold text-white drop-shadow-lg mb-6 text-center">
+            ¡Bienvenido a TechNet!
+            </h1>
+            <p className="text-xl md:text-2xl text-white/90 mb-8 text-center max-w-2xl">
+            Conecta, comparte y aprende sobre tecnología con una comunidad vibrante.
+            Únete ahora y lleva tu red al siguiente nivel.
+            </p>
+            <div className="flex gap-6">
             <a
-            href="/register"
-            className="px-6 py-3 bg-blue-500 text-white font-kdam text-lg rounded-md hover:bg-blue-700 transition-colors"
+                href="/login"
+                className="bg-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:bg-blue-700 transition"
             >
-            Registrarse
+                Iniciar sesión
             </a>
-            <button
-            onClick={() => router.push("/login")}
-            className="cursor-pointer px-6 py-3 border border-blue-500 text-blue-500 font-kdam text-lg rounded-md hover:bg-blue-100 transition-colors"
+            <a
+                href="/register"
+                className="bg-white text-blue-700 px-8 py-3 rounded-full text-lg font-semibold shadow-lg hover:bg-blue-100 transition"
             >
-            Iniciar sesión
-            </button>
+                Regístrate
+            </a>
+            </div>
         </div>
-        </section>
+        </motion.section>
     );
 }

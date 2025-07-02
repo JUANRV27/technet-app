@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -32,7 +33,12 @@ export default function LoginPage() {
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Navbar />
                 <main className="flex-1 flex flex-col items-center justify-center px-4">
-                    <div className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md"
+                    >
                         <h2 className="font-kdam text-3xl text-blue-700 mb-6">Iniciar sesión</h2>
                         <form className="w-full flex flex-col gap-4" onSubmit={handleSubmit}>
                             <div className="flex flex-col gap-1">
@@ -87,7 +93,7 @@ export default function LoginPage() {
                         <a href="/register" className="mt-4 text-blue-500 hover:underline text-sm">
                             ¿No tienes cuenta? Regístrate
                         </a>
-                    </div>
+                    </motion.div>
                 </main>
             </div>
         </div>

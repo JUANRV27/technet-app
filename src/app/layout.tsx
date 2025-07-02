@@ -34,7 +34,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${kdam.variable} ${geistSans.variable} ${geistMono.variable}`}>
-      <head />
       <body>
         {children}
       </body>

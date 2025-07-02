@@ -1,8 +1,9 @@
 "use client";
 import Navbar from "@/components/Navbar";
 import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -84,11 +85,16 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-cover bg-center" style={{ backgroundImage: 'url(/Register.jpg)' }}>
+        <div className="min-h-screen flex flex-col bg-cover bg-center overflow-hidden" style={{ backgroundImage: 'url(/Register.jpg)' }}>
             <div className="relative z-10 flex flex-col min-h-screen">
                 <Navbar />
                 <main className="flex-1 flex flex-col items-center justify-center px-4">
-                    <div className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="bg-white/40 border border-black rounded-[2.5rem] shadow-lg p-8 w-full max-w-md flex flex-col items-center backdrop-blur-md"
+                    >
                         <h2 className="font-kdam text-3xl text-blue-700 mb-6">Crear cuenta</h2>
                         {successMessage && (
                             <span className="mb-4 text-green-600 font-semibold text-center">{successMessage}</span>
@@ -195,7 +201,7 @@ export default function RegisterPage() {
                         <a href="/login" className="mt-4 text-blue-500 hover:underline text-sm">
                             ¿Ya tienes cuenta? Inicia sesión
                         </a>
-                    </div>
+                    </motion.div>
                 </main>
             </div>
         </div>
