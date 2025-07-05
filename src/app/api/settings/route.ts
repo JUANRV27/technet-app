@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     avatar: String,
 }, { collection: "Usuarios", strict: false});
 
-const User = mongoose.models.User || mongoose.model("User", UserSchema);
+const User = mongoose.models.Usuarios || mongoose.model("Usuarios", UserSchema);
 
 async function connectDB() {
     if (mongoose.connection.readyState === 1) return;
@@ -29,24 +29,17 @@ export async function POST(req: NextRequest) {
 
         const { nombre, username, biografia, avatar } = await req.json();
 
-        // Opcional: Validaciones básicas
-        if (!nombre || !username) {
-            return NextResponse.json({ success: false, error: "Nombre y usuario requeridos" }, { status: 400 });
-        }
+        const updateFields: any = {};
+        if (nombre !== undefined && nombre !== "") updateFields.nombre = nombre;
+        if (username !== undefined && username !== "") updateFields.username = username;
+        if (biografia !== undefined && biografia !== "") updateFields.biografia = biografia;
+        if (avatar !== undefined && avatar !== "") updateFields.avatar = avatar;
 
-        // Verifica que el username no esté en uso por otro usuario
-        const exists = await User.findOne({ username, email: { $ne: userEmail } });
-        if (exists) {
-            return NextResponse.json({ success: false, error: "El nombre de usuario ya está en uso" }, { status: 409 });
-        }
-
-        console.log("userEmail:", userEmail);
-        const user = await User.findOne({ email: userEmail });
-        console.log("Usuario encontrado:", user);
+        console.log("Campos recibidos para actualizar:", updateFields);
 
         const result = await User.updateOne(
             { email: userEmail },
-            { $set: { nombre, username, biografia, avatar } }
+            { $set: updateFields }
         );
         console.log("Resultado del update:", result);
 

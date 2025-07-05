@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Kdam_Thmor_Pro } from "next/font/google";
+import Script from "next/script";
 
 const kdam = Kdam_Thmor_Pro({
   subsets: ["latin"],
@@ -34,9 +35,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${kdam.variable} ${geistSans.variable} ${geistMono.variable}`}>
-      <body>
-        {children}
-      </body>
+      <head>
+        <Script
+          src="https://widget.cloudinary.com/v2.0/global/all.js"
+          strategy="beforeInteractive"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
